@@ -1,11 +1,15 @@
 let acorn = require('acorn')
 let fsp = require('fs').promises
+let fs = require('fs')
+let path = require('path')
+let uuidv4 = require('uuid').v4
+
 let acorn_globals = require('acorn-globals')
 
-const { isOpening, isClosing, isBalancedBracket } = require('./utils.js')
+const { isOpening, isClosing, isBalancedBracket, parsel } = require('./utils.js')
 // TODO tacke external vars
 // TODO tacke deps
-// aka TODO extend //l syntax
+// aka TODO extend 
 
 
 async function main() {
@@ -35,7 +39,7 @@ async function main() {
   // ...to check it's well formed
   const bracketExpr = lines
     .map(l => l.isOpening ? '(' : l.isClosing ? ')' : '')
-
+  console.log(bracketExpr)
   // ensure its balanced
   const pendingBrackets = bracketExpr.reduce((acc, ch) => {
     let c = acc
@@ -54,8 +58,6 @@ async function main() {
     if (c >= 2) throw new Error("Nested comments arent allowed")
     return c;
   }, 0)
-
-  console.log(lines)
 
   // #################################################
 
@@ -89,8 +91,6 @@ async function main() {
     
   }
 
-  console.log(linSection)
-
   // #################################################
 
   // For each section that shall be distributed
@@ -100,11 +100,83 @@ async function main() {
       .map(s => s.str)
       .join('\n')
     console.log(`analyzing '${ secTxt }'`)
+
+    // analyze l header
+    const analy = parsel(sec[0].str)
     // analyze global vars
-    const globalVarReport = acorn_globals(secTxt)
-    console.log(globalVarReport.map(rep => console.log(rep.nodes)))
+    // const globalVarReport = acorn_globals(secTxt)
+    // console.log(globalVarReport.map(rep => console.log(rep.nodes)))
+    
+    // act on that info
+    // CREATE LAMBDA FN FOR THAT SECTION WITH GIVEN INP AND GIVEN RETUR    
+
+    
+    if (!fs.existsSync('./lambdas')){
+      fs.mkdirSync('./lambdas');
+    }
+
+    const dirname = uuidv4()
+    fs.mkdirSync(path.join('./lambdas', dirname))
+
+
+
+    // WRITE PACKAGE.JSON
+    const deps = {}
+    for (const npmi of analy.npminstall) {
+      // js2faas@latest => @
+      let firstWeird = npmi.match(/[^a-zA-Z0-9]+/)
+      if(firstWeird.length) {
+        const separator = firstWeird[0]
+        const [name, version] = npmi.split(separator)
+        deps[name] = version
+      } 
+      else {
+        deps[name] = 'latest'
+      }
+    }
+
+    let pkgjsonContent = {
+      "name": "abcde",
+      "version": "0.0.1",
+      "description": "",
+      "main": "index.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+      "author": "",
+  
+      "dependencies": {
+        ...deps
+      }
+    }
+
+    pkgjsonContent = JSON.stringify(pkgjsonContent, null, 2)
+    fs.writeFileSync(path.join('./lambdas', dirname, 'package.json'), pkgjsonContent)
+
+    // WRITE INDEX.JS
+    const varDeclarationStatements = analy.vars
+      .map(varn => `let ${varn.as} = event.${varn.name};`)
+  
+    const filecontent = `
+exports.handler = async (event, context) => {
+  ${ varDeclarationStatements.join('\n') }
+  ${secTxt}
+  ${ analy.return != null ? `context.succeed(${analy.return})` : ""}
+}
+    `
+  console.log("===========")
+  console.log(filecontent)
+  console.log("===========")
+
+    // TODO lol
+  fs.writeFileSync(path.join('./lambdas', dirname, 'index.js'), filecontent)
   }
   
+  console.log("Done")
+
+
+
+
 }
 
 
