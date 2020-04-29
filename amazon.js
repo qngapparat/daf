@@ -3,6 +3,7 @@ const extractLines = require('./extractLines')
 const fs = require('fs')
 const path = require('path')
 const uuidv4 = require('uuid').v4
+const prettier = require('prettier')
 
 async function main(args) {
 
@@ -88,13 +89,15 @@ async function main(args) {
     .slice(1, -1)
     .join('\n')
 
-  const filecontent = `
-exports.handler = async (event, context) => {
-  ${ varDeclarationStatements.join('\n')}
-  ${secTxt}
-  ${ analy.return != null ? `context.succeed(${analy.return.name})` : ""}
-}
+  const filecontent = prettier.format(
     `
+      exports.handler = async (event, context) => {
+        ${ varDeclarationStatements.join('\n')}
+        ${secTxt}
+        ${ analy.return != null ? `context.succeed(${analy.return.name})` : ""}
+      }
+    `
+  )
   //console.log("===========")
   //console.log(filecontent)
   //console.log("===========")
