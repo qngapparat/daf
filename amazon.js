@@ -2,6 +2,7 @@ const { parsel } = require('./utils')
 const extractLines = require('./extractLines')
 const fs = require('fs')
 const path = require('path')
+const uuidv4 = require('uuid').v4
 
 async function main(args) {
 
