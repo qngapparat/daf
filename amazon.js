@@ -83,7 +83,10 @@ async function main(args) {
     .map(varn => `let ${varn.as} = event.${varn.name};`)
 
   // strip //l and //lend
-  secTxt = secTxt.slice(1, -1)
+  secTxt = secTxt
+    .split('\n')
+    .slice(1, -1)
+    .join('\n')
 
   const filecontent = `
 exports.handler = async (event, context) => {
