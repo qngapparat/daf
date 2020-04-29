@@ -5,13 +5,13 @@ const path = require('path')
 
 async function main(args) {
 
+  // get lines of source code that should be put on Faas
   const sec = await extractLines(args['--fpath'], args['--linenum']);
 
   const secTxt = sec
     .map(s => s.str)
     .join('\n')
-  console.log(`analyzing '${secTxt}'`)
-
+ 
   // analyze l header
   const analy = parsel(sec[0].str)
  
@@ -26,6 +26,7 @@ async function main(args) {
   if(!fs.existsSync(path.join(args['--outpath'], 'lambdas', dirname))){
     fs.mkdirSync(path.join(args['--outpath'], 'lambdas', dirname))
   }
+
  
   // WRITE PACKAGE.JSON
   const deps = {}
@@ -47,8 +48,10 @@ async function main(args) {
 
   // that lambda already exists => take existing package.json don't create from scratch
   if (fs.existsSync(path.join(args['--outpath'], 'lambdas', dirname, 'package.json'))) {
-    console.log("MODIFYING EXIETING PACKAGE:JSON")
+    console.log(`Updating existing function ${ dirname }`)
     pkgjsonContent = JSON.parse(fs.readFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'package.json'), { encoding: 'utf8' }))
+  } else {
+    console.log(`Creating new function ${ dirname } `)
   }
 
   pkgjsonContent = {
@@ -73,7 +76,6 @@ async function main(args) {
 
   //////////////////////////////////////////
 
-
   // WRITE INDEX.JS
   // (always overwrite)
   const varDeclarationStatements = analy.vars
@@ -86,16 +88,15 @@ exports.handler = async (event, context) => {
   ${ analy.return != null ? `context.succeed(${analy.return.name})` : ""}
 }
     `
-  console.log("===========")
-  console.log(filecontent)
-  console.log("===========")
+  //console.log("===========")
+  //console.log(filecontent)
+  //console.log("===========")
 
   // TODO lol
   fs.writeFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'index.js'), filecontent)
 
-
-  console.log("Done")
-
+  //////////////////////////////////////////
+  //console.log("Done")
 }
 
 module.exports = main

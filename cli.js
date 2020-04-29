@@ -1,7 +1,10 @@
-
 const arg = require('arg')
+const amazon = require('./amazon')
 
 async function main() {
+
+  // TODO take outpath
+
   const args = arg({
     '--fpath': String,
     '--linenum': String,
@@ -23,11 +26,7 @@ async function main() {
     process.exit()
   }
 
-  const FPATH = args['--fpath']
-  const LINEFROM = args['--linenum']
-  const OUTPATH = args['--outpath']
-
-  
+  await amazon(args)
 }
 
 
