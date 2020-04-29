@@ -115,14 +115,13 @@ async function main() {
       fs.mkdirSync('./lambdas');
     }
 
-    const dirname = uuidv4()
+    const dirname = analy.fname ? analy.fname : uuidv4()
     fs.mkdirSync(path.join('./lambdas', dirname))
-
 
 
     // WRITE PACKAGE.JSON
     const deps = {}
-    for (const npmi of analy.npminstall) {
+    for (const npmi of analy.install) {
       // js2faas@latest => @
       let firstWeird = npmi.match(/[^a-zA-Z0-9]+/)
       if(firstWeird.length) {
@@ -135,25 +134,38 @@ async function main() {
       }
     }
 
-    let pkgjsonContent = {
-      "name": "abcde",
+    let pkgjsonContent = {}
+    
+    // that lambda already exists => take existing package.json don't create from scratch
+    if(fs.existsSync(path.join('./lambas', dirname, 'package.json'))) {
+      pkgjsonContent = fs.readFileSync(path.join('./lambdas', dirname, 'package.json'), { encoding: 'utf8'})
+    }
+
+    pkgjsonContent = {
+      "name": analy.fname ? analy.fname : dirname, // TODO Better fallback ?
       "version": "0.0.1",
       "description": "",
       "main": "index.js",
       "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
+        // TODO deploy scr
       },
       "author": "",
-  
+      ...pkgjsonContent, // only overwrite dependencies of previous package.json (if there's one)
       "dependencies": {
         ...deps
       }
     }
 
+    // write package.json
     pkgjsonContent = JSON.stringify(pkgjsonContent, null, 2)
     fs.writeFileSync(path.join('./lambdas', dirname, 'package.json'), pkgjsonContent)
 
+    //////////////////////////////////////////
+
+
     // WRITE INDEX.JS
+    // (always overwrite)
     const varDeclarationStatements = analy.vars
       .map(varn => `let ${varn.as} = event.${varn.name};`)
   
@@ -161,7 +173,7 @@ async function main() {
 exports.handler = async (event, context) => {
   ${ varDeclarationStatements.join('\n') }
   ${secTxt}
-  ${ analy.return != null ? `context.succeed(${analy.return})` : ""}
+  ${ analy.return != null ? `context.succeed(${analy.return.name})` : ""}
 }
     `
   console.log("===========")

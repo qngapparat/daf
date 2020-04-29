@@ -42,7 +42,8 @@ function parsel(lcomment) {
   let anl = {
     vars: [],
     return: null,
-    npminstall: []
+    install: [],
+    fname: null
   }
 
 
@@ -85,9 +86,20 @@ function parsel(lcomment) {
 
     if (returnStr == '') {
       console.log("Nothing specified with return, faas fn will be void")
+      return
     }
+
+    if (returnStr.includes(" as ")) {
+      anl.return = {
+        name: returnStr.split("as")[0].trim(),
+        as: returnStr.split("as")[1].trim()
+      }
+    } 
     else {
-      anl.return = returnStr
+      anl.return = {
+        name: returnStr,
+        as: returnStr
+      }
     }
   }
   else {
@@ -95,7 +107,7 @@ function parsel(lcomment) {
   }
 
 
-  if (str.includes('npminstall')) {
+  if (str.includes('install')) {
     let installStr = str.match(/install([^)]+)/)[0]
     // inner text 
      // inner text 
@@ -108,7 +120,19 @@ function parsel(lcomment) {
      .map(name => name.trim())
      .filter(name => name !== '')
 
-    anl.npminstall = names
+    anl.install = names
+  }
+
+
+  if (str.includes('fname')) {
+    let fnameStr = str.match(/fname([^)]+)/)[0]
+    // inner text 
+     // inner text 
+     fnameStr = fnameStr
+     .replace('fname(', '')
+     .replace(/\)$/, '')
+
+    anl.fname = fnameStr.trim()
   }
 
   console.log(anl)
