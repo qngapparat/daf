@@ -1,5 +1,5 @@
 {
-  "name": "abcde",
+  "name": "nname",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "author": "",
   "dependencies": {
     "js2faas": "latest",
-    "java2faas": "0.2.30",
-    "bin2faas": "0.1.0"
+    "java2faas": "1.0.0",
+    "bin2faas": "2.0.0"
   }
 }
