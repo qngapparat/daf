@@ -20,6 +20,7 @@ async function main() {
   const args = arg({
     '--fpath': String,
     '--linenum': String,
+    '--outpath': String
   })
 
   if (args['--fpath'] == null) {
@@ -32,10 +33,16 @@ async function main() {
     process.exit()
   }
 
+  if (args['--outpath'] == null) {
+    console.log('Specify --outpath')
+    process.exit()
+  }
+
   const FPATH = args['--fpath']
   const LINEFROM = args['--linenum']
+  const OUTPATH = args['--outpath']
 
-  let txt = await fsp.readFile('./demoprog.js', { encoding: 'utf8' })
+  let txt = await fsp.readFile(FPATH, { encoding: 'utf8' })
 
   /**
    * IE:
@@ -161,6 +168,7 @@ async function main() {
   // const globalVarReport = acorn_globals(secTxt)
   // console.log(globalVarReport.map(rep => console.log(rep.nodes)))
 
+  /// ########################################
   // act on that info
   // CREATE LAMBDA FN FOR THAT SECTION WITH GIVEN INP AND GIVEN RETUR    
 
@@ -170,9 +178,10 @@ async function main() {
   }
 
   const dirname = analy.fname ? analy.fname : uuidv4()
-  if(!fs.existsSync(path.join('./lambdas', dirname))){
-    fs.mkdirSync(path.join('./lambdas', dirname))
+  if(!fs.existsSync(path.join(OUTPATH, 'lambdas', dirname))){
+    fs.mkdirSync(path.join(OUTPATH, 'lambdas', dirname))
   }
+  console.log(`Writing Functions to ${ path.join(OUTPATH, 'lambdas', dirname ) }`)
 
 
   // WRITE PACKAGE.JSON
@@ -187,16 +196,16 @@ async function main() {
       deps[name] = version
     }
     else {
-      deps[name] = 'latest'
+      deps[name] = 'latest' // TODO use current as default, not latest
     }
   }
 
   let pkgjsonContent = {}
 
   // that lambda already exists => take existing package.json don't create from scratch
-  if (fs.existsSync(path.join('./lambdas', dirname, 'package.json'))) {
+  if (fs.existsSync(path.join(OUTPATH, 'lambdas', dirname, 'package.json'))) {
     console.log("MODIFYING EXIETING PACKAGE:JSON")
-    pkgjsonContent = JSON.parse(fs.readFileSync(path.join('./lambdas', dirname, 'package.json'), { encoding: 'utf8' }))
+    pkgjsonContent = JSON.parse(fs.readFileSync(path.join(OUTPATH, 'lambdas', dirname, 'package.json'), { encoding: 'utf8' }))
   }
 
   pkgjsonContent = {
@@ -217,7 +226,7 @@ async function main() {
 
   // write package.json
   pkgjsonContent = JSON.stringify(pkgjsonContent, null, 2)
-  fs.writeFileSync(path.join('./lambdas', dirname, 'package.json'), pkgjsonContent)
+  fs.writeFileSync(path.join(OUTPATH, 'lambdas', dirname, 'package.json'), pkgjsonContent)
 
   //////////////////////////////////////////
 
@@ -239,7 +248,7 @@ exports.handler = async (event, context) => {
   console.log("===========")
 
   // TODO lol
-  fs.writeFileSync(path.join('./lambdas', dirname, 'index.js'), filecontent)
+  fs.writeFileSync(path.join(OUTPATH, 'lambdas', dirname, 'index.js'), filecontent)
 
 
   console.log("Done")
