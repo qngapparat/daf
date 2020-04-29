@@ -23,7 +23,7 @@ async function main(args) {
   if (!fs.existsSync(path.join(args['--outpath'], 'lambdas'))) {
     fs.mkdirSync(path.join(args['--outpath'], 'lambdas'));
   }
-  const dirname = analy.fname ? analy.fname : uuidv4()
+  const dirname = analy.name ? analy.name : uuidv4()
   if(!fs.existsSync(path.join(args['--outpath'], 'lambdas', dirname))){
     fs.mkdirSync(path.join(args['--outpath'], 'lambdas', dirname))
   }
@@ -56,7 +56,7 @@ async function main(args) {
   }
 
   pkgjsonContent = {
-    "name": analy.fname ? analy.fname : dirname, // TODO Better fallback ?
+    "name": analy.name ? analy.name : dirname, // TODO Better fallback ?
     "version": "0.0.1",
     "description": "",
     "main": "index.js",

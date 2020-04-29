@@ -43,7 +43,7 @@ function parsel(lcomment) {
     vars: [],
     return: null,
     install: [],
-    fname: null
+    name: null
   }
 
 
@@ -124,15 +124,15 @@ function parsel(lcomment) {
   }
 
 
-  if (str.includes('fname')) {
-    let fnameStr = str.match(/fname([^)]+)/)[0]
+  if (str.includes('name')) {
+    let nameStr = str.match(/name([^)]+)/)[0]
     // inner text 
      // inner text 
-     fnameStr = fnameStr
-     .replace('fname(', '')
+     nameStr = nameStr
+     .replace('name(', '')
      .replace(/\)$/, '')
 
-    anl.fname = fnameStr.trim()
+    anl.name = nameStr.trim()
   }
 
   console.log(anl)
