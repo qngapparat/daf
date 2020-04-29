@@ -96,7 +96,8 @@ async function main(args) {
         ${secTxt}
         ${ analy.return != null ? `context.succeed(${analy.return.name})` : ""}
       }
-    `
+    `,
+    { semi: false }
   )
   //console.log("===========")
   //console.log(filecontent)
