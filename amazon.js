@@ -9,7 +9,7 @@ async function main(args) {
   // get lines of source code that should be put on Faas
   const sec = await extractLines(args['--fpath'], args['--linenum']);
 
-  const secTxt = sec
+  let secTxt = sec
     .map(s => s.str)
     .join('\n')
  
@@ -81,6 +81,9 @@ async function main(args) {
   // (always overwrite)
   const varDeclarationStatements = analy.vars
     .map(varn => `let ${varn.as} = event.${varn.name};`)
+
+  // strip //l and //lend
+  secTxt = secTxt.slice(1, -1)
 
   const filecontent = `
 exports.handler = async (event, context) => {
