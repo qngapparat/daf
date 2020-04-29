@@ -1,26 +1,18 @@
 {
   "name": "llend",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pack": "webpack"
   },
   "bin": {
     "llend": "./cli.js"
   },
-  "author": "",
+  "author": "qngapparat <jakob.wallnoefer@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "acorn": "^7.1.1",
-    "acorn-globals": "^6.0.0",
     "arg": "^4.1.3",
-    "pegjs": "^0.10.0",
-    "uuid": "^7.0.3",
-    "webpack": "^4.43.0"
-  },
-  "devDependencies": {
-    "webpack-cli": "^3.3.11"
+    "uuid": "^7.0.3"
   }
 }
