@@ -1,3 +1,7 @@
+const path = require('path')
+const webpack = require('webpack')
+const tmp = require('tmp')
+const fs = require('fs')
 
 // whether codeline is pragma start
 function isOpening(line) {
@@ -23,12 +27,14 @@ function isBalancedBracket(str) {
 /**
  * 
  * @param {string} lcomment 
+ * @param {string} args cli arguments
  * @returns [ vars: [...{name: 'a', as: 'a'} ] ]
  */
-function parsel(lcomment) {
+async function parsel(lcomment, args) {
   let str = lcomment
-    .replace(/[\/\*]/g, '') // remove / and * (// and /*... */)
+    .replace(/\/+/, '') // remove leading /'s
     .trim()
+  console.log("STR", str)
   if (str[0] !== 'l') throw new Error("First char should be lowercase l: ", str)
 
   // remove l
@@ -78,12 +84,13 @@ function parsel(lcomment) {
 
 
   if (str.includes('require')) {
+    console.log("STR", str)
     let requireStr = str.match(/require([^)]+)/)[0]
     // inner text 
     requireStr = requireStr
-      .replace('require(', '')
-      .replace(/\)$/, '')
-
+    .replace('require(', '')
+    .replace(/\)$/, '')
+    
     let reqStatements = requireStr
       .split(',')
       .map(reqstatement => reqstatement.trim())
@@ -97,6 +104,82 @@ function parsel(lcomment) {
     // or
     // 'opencv'
     for (const reqS of reqStatements) {
+
+      // we're importing a file / function
+      // eg: 
+      //  // l require(./dir/myfunc as myfunc)
+      if (reqS.includes('.') || reqS.includes('/') || reqS.includes("\\")) {
+
+        console.log("Importing a funciton/file: ", reqS)
+
+        // Ensure user specified an 'as' alias
+        if (/\sas\s/.test(reqS) === false) throw new Error("Specify an 'as' alias in your require() clause")
+
+        // eg './dir/myfunc'
+        const reqSpath = reqS.split(' as ')[0].trim()
+
+        // './dir/myfunc' but absolute => /home/user/dir/myfunc
+        const absolutereqSpath = path.resolve(
+          path.resolve(args['--fpath'], '..'), // where file with //l lies 
+          reqSpath // relative path from where filewith//l lies to file he wants to import
+        )
+
+        console.log("PATH: ", absolutereqSpath)
+
+        // Workaround for silly webpack not accepting code strings, only filepaths
+
+        // create dummy file that imports, and immediately exports the function
+        // then we run webpack on that, to bundle all its code dependencies
+        // the output is the function, but with all deps to run independently
+
+        // 1 Create dummy input file
+        let infilepath = tmp.fileSync({ postfix: '.js' });
+        infilepath = infilepath.name
+
+        fs.writeFileSync(infilepath, `
+          const f = require('${ absolutereqSpath}');
+          module.exports = f;
+        `)
+
+        // 2 Create dummy output directory
+        let outfiledir = tmp.dirSync();
+        outfiledir = outfiledir.name
+
+
+        // 3 Run webpack: inputfile => webpack => outputdir/bundle.js
+        await new Promise((resolve, reject) => {
+          webpack(
+            {
+              mode: 'development', // don't scramble source
+              entry: infilepath,
+              output: {
+                path: outfiledir,
+                filename: 'bundle.js'
+              },
+            }
+            , (err, stats) => { // Stats Object
+              if (err || stats.hasErrors()) {
+                reject(err, stats)
+              } else {
+                resolve()
+              }
+            });
+        })
+
+        const bundlejssrc = fs.readFileSync(path.join(outfiledir, 'bundle.js'), {encoding: 'utf8'})
+
+        console.log("BUNDLE SRC: ", bundlejssrc)
+      }
+
+      // we're importing a package
+      else {
+        console.log("Importing a package: ", reqS)
+
+        // Get actual name
+        // 'a as b' => b
+        // 'c' => c
+      }
+
       // a as alias => { name: 'a', as: 'alias' }
       if (/\sas\s/.test(reqS) === true) {
         anl.require.push({
@@ -109,8 +192,8 @@ function parsel(lcomment) {
         // don't allow './dir/myfunc', it must have an alphanumeric alias to be used as variablename
         if (/[a-zA-Z_$][0-9a-zA-Z_$]*/.test(reqS) === false) {
           throw new Error(`Please specify an alias with 'as' for ${reqS}`)
-        } 
-         anl.require.push({ name: reqS.trim(), as: reqS.trim() })
+        }
+        anl.require.push({ name: reqS.trim(), as: reqS.trim() })
       }
     }
   }

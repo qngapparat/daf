@@ -15,7 +15,7 @@ async function main(args) {
     .join('\n')
 
   // analyze l header
-  const analy = parsel(sec[0].str)
+  const analy = await parsel(sec[0].str, args)
 
   // MAKE DIRECTORIES
   if (!fs.existsSync(args['--outpath'])) {
