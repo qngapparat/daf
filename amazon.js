@@ -13,10 +13,10 @@ async function main(args) {
   let secTxt = sec
     .map(s => s.str)
     .join('\n')
- 
+
   // analyze l header
   const analy = parsel(sec[0].str)
- 
+
   // MAKE DIRECTORIES
   if (!fs.existsSync(args['--outpath'])) {
     fs.mkdirSync(args['--outpath']);
@@ -25,11 +25,11 @@ async function main(args) {
     fs.mkdirSync(path.join(args['--outpath'], 'lambdas'));
   }
   const dirname = analy.name ? analy.name : uuidv4()
-  if(!fs.existsSync(path.join(args['--outpath'], 'lambdas', dirname))){
+  if (!fs.existsSync(path.join(args['--outpath'], 'lambdas', dirname))) {
     fs.mkdirSync(path.join(args['--outpath'], 'lambdas', dirname))
   }
 
- 
+
   // WRITE PACKAGE.JSON
   const deps = {}
   for (const npmi of analy.install) {
@@ -50,10 +50,10 @@ async function main(args) {
 
   // that lambda already exists => take existing package.json don't create from scratch
   if (fs.existsSync(path.join(args['--outpath'], 'lambdas', dirname, 'package.json'))) {
-    console.log(`Updating existing function ${ dirname }`)
+    console.log(`Updating existing function ${dirname}`)
     pkgjsonContent = JSON.parse(fs.readFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'package.json'), { encoding: 'utf8' }))
   } else {
-    console.log(`Creating new function ${ dirname } `)
+    console.log(`Creating new function ${dirname} `)
   }
 
   pkgjsonContent = {
@@ -74,7 +74,7 @@ async function main(args) {
 
   // write package.json
   pkgjsonContent = JSON.stringify(pkgjsonContent, null, 2)
-  fs.writeFileSync(path.join(args['--outpath'],'lambdas', dirname, 'package.json'), pkgjsonContent)
+  fs.writeFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'package.json'), pkgjsonContent)
 
   //////////////////////////////////////////
 
@@ -89,8 +89,15 @@ async function main(args) {
     .slice(1, -1)
     .join('\n')
 
+
+  const requireTxt = analy.require
+    .map(reqStatement => `const ${reqStatement.as} = require('${reqStatement.name}')`)
+    .join('\n')
+
   const filecontent = prettier.format(
     `
+      ${requireTxt}
+
       exports.handler = async (event, context) => {
         ${ varDeclarationStatements.join('\n')}
         ${secTxt}
@@ -99,9 +106,9 @@ async function main(args) {
     `,
     { semi: false }
   )
-  //console.log("===========")
-  //console.log(filecontent)
-  //console.log("===========")
+  console.log("===========")
+  console.log(filecontent)
+  console.log("===========")
 
   // TODO lol
   fs.writeFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'index.js'), filecontent)
