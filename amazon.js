@@ -3,6 +3,8 @@ const extractLines = require('./extractLines')
 const fs = require('fs')
 const path = require('path')
 const uuidv4 = require('uuid').v4
+const tmp = require('tmp')
+const webpack = require('webpack')
 const prettier = require('prettier')
 
 async function main(args) {
@@ -77,6 +79,130 @@ async function main(args) {
   fs.writeFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'package.json'), pkgjsonContent)
 
   //////////////////////////////////////////
+
+  //WRITE OTHER .JS FILES
+  //(code files that index.js will depend on)
+
+  // eg:
+  // 'opencv2 as cv2'
+  // or
+  // './dir/myfunc as myf'
+  // or
+  // 'opencv'
+  for (const reqS of analy.require) {
+
+    // We're importing a FILE / FUNCTION
+    // eg: 
+    //  // l require(./dir/myfunc as myfunc)
+    // => { name: './dir/myfunc', as: 'myfunc' }
+    if (reqS.name.includes('.') || reqS.name.includes('/') || reqS.name.includes("\\")) {
+
+      // Ensure user specified an 'as' alias
+      if (reqS.as == null || reqS.as.trim() === '') throw new Error("Specify an 'as' alias, for example: require(./file.js as alias)")
+      console.log("Importing a funciton/file: ", reqS)
+
+
+      // './dir/myfunc' but absolute => /home/user/dir/myfunc
+      const absolutereqSpath = path.resolve(
+        path.resolve(args['--fpath'], '..'), // where file with //l lies 
+        reqS.name // relative path from where filewith//l lies to file he wants to import
+      )
+
+      console.log("PATH: ", absolutereqSpath)
+
+      // Workaround for silly webpack not accepting code strings, only filepaths
+
+      // create dummy file that imports, and immediately exports the function
+      // then we run webpack on that, to bundle all its code dependencies
+      // the output is the function, but with all deps to run independently
+
+      // 1 Create dummy input file
+      let infilepath = tmp.fileSync({ postfix: '.js' });
+      infilepath = infilepath.name
+      fs.writeFileSync(infilepath, `
+          const f = require('${ absolutereqSpath}');
+          module.exports = f;
+        `)
+
+      // 2 Create dummy output directory
+      let outfiledir = tmp.dirSync();
+      outfiledir = outfiledir.name
+
+      // 3 Run webpack: inputfile => webpack => outputdir/bundle.js
+      await new Promise((resolve, reject) => {
+        webpack(
+          {
+            mode: 'development', // don't scramble source
+            entry: infilepath,
+            output: {
+              path: outfiledir,
+              filename: 'bundle.js'
+            },
+          }
+          , (err, stats) => { // Stats Object
+            if (err || stats.hasErrors()) {
+              reject(err, stats)
+            } else {
+              resolve()
+            }
+          });
+      })
+
+      // Get webpack output
+      const bundlejssrc = fs.readFileSync(path.join(outfiledir, 'bundle.js'), { encoding: 'utf8' })
+
+      console.log("BUNDLE SRC: ", bundlejssrc)
+
+      const fcontent = `
+        const a = 
+         ${ bundlejssrc}
+
+        ;module.exports = a;
+      `
+      // ./some/dir/myfunc.js => myfunc.js
+      const fname = reqS.name.split(path.sep).pop()
+
+      // write webpacked js file
+      fs.writeFileSync(
+        path.join(args['--outpath'], 'lambdas', dirname, fname),
+        fcontent
+      )
+
+      console.log("WRITTEN FILE ${fname}")
+
+    }
+
+    // we're importing a NPM PACKAGE
+    else {
+      console.log("Importing a package: ", reqS)
+
+
+      // TODO
+      // Get actual name
+      // 'a as b' => b
+      // 'c' => c
+    }
+
+    // // a as alias => { name: 'a', as: 'alias' }
+    // if (/\sas\s/.test(reqS) === true) {
+    //   anl.require.push({
+    //     name: reqS.split(' as ')[0].trim(),
+    //     as: reqS.split(' as ')[1].trim()
+    //   })
+    // }
+
+    // else {
+    //   // don't allow './dir/myfunc', it must have an alphanumeric alias to be used as variablename
+    //   if (/[a-zA-Z_$][0-9a-zA-Z_$]*/.test(reqS) === false) {
+    //     throw new Error(`Please specify an alias with 'as' for ${reqS}`)
+    //   }
+    //   anl.require.push({ name: reqS.trim(), as: reqS.trim() })
+    // }
+  }
+
+
+
+
 
   // WRITE INDEX.JS
   // (always overwrite)
