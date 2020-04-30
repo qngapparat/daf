@@ -36,7 +36,7 @@ async function main(args) {
     // process // l install() field
     // js2faas@latest => @
     let firstWeird = npmi.match(/[^a-zA-Z0-9]+/)
-    if (firstWeird.length) {
+    if (firstWeird && firstWeird.length) {
       const separator = firstWeird[0]
       const [name, version] = npmi.split(separator)
       deps[name] = version
