@@ -41,10 +41,10 @@ async function main(args) {
     if (firstWeird && firstWeird.length) {
       const separator = firstWeird[0]
       const [name, version] = npmi.split(separator)
-      deps[name] = version
+      deps[name] = separator + version // DO include separator: ie ^1.0.0
     }
     else {
-      deps[name] = 'latest' // TODO use current as default, not latest
+      deps[npmi] = 'latest' // TODO use current as default, not latest
     }
   }
 
