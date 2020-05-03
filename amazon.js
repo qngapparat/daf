@@ -250,16 +250,13 @@ async function main(args) {
     let ls = fs.readFileSync(args['--fpath'], { encoding: 'utf8' })
     ls = ls.split('\n')
     // (1) add a /* under // l
-    ls[args['--linenum']] += '\n/**'
+   //ls[args['--linenum']] += '\n/**'
 
     // (2) continue line by line until we find // lend, then add a */ before that
     for (const [idx, l] of ls.slice(args['--linenum']).entries()) {
-      console.log("checking line", l)
       if (isClosing(l) === true) {
-
-        ls[Number(args['--linenum']) + idx] = `*/ \n${l}\n`
-
         // (3) add a Faas call the line below
+        ls[Number(args['--linenum']) + idx] += '\n' //`*/ \n${l}\n`
         ls[Number(args['--linenum']) + idx] +=
           (analy.return && `let ${ analy.return } = ` || '') + `(new (require('aws-sdk'))
           .Lambda({ region: 'your_region', /* Your access key and secret access key */}))
