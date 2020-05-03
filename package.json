@@ -1,6 +1,6 @@
 {
   "name": "llend",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "llend description",
   "main": "index.js",
   "scripts": {
