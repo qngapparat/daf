@@ -6,7 +6,7 @@ const uuidv4 = require('uuid').v4
 const tmp = require('tmp')
 const webpack = require('webpack')
 const prettier = require('prettier')
-
+const { isClosing } = require('./utils')
 async function main(args) {
 
   // get lines of source code that should be put on Faas
@@ -238,6 +238,42 @@ async function main(args) {
 
   // TODO lol
   fs.writeFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'index.js'), filecontent)
+
+
+  // If commentout was specified, comment out that section of monolith source
+  if (args['--commentout']) {
+    if (!analy.name) {
+      throw new Error("Give it a name in order to use that feature")
+    }
+
+    console.log("Commenting out section....")
+    let ls = fs.readFileSync(args['--fpath'], { encoding: 'utf8' })
+    ls = ls.split('\n')
+    // (1) add a /* under // l
+    ls[args['--linenum']] += '\n/**'
+
+    // (2) continue line by line until we find // lend, then add a */ before that
+    for (const [idx, l] of ls.slice(args['--linenum']).entries()) {
+      console.log("checking line", l)
+      if (isClosing(l) === true) {
+
+        ls[Number(args['--linenum']) + idx] = `*/ \n${l}\n`
+
+        // (3) add a Faas call the line below
+        ls[Number(args['--linenum']) + idx] +=
+          (analy.return && `let ${ analy.return } = ` || '') + `(new (require('aws-sdk'))
+          .Lambda({ region: 'your_region', /* Your access key and secret access key */}))
+          .invoke({ FunctionName: "${ analy.name }" }).promise()
+        `
+      }
+    }
+    // write back to disk
+    const newsource = ls.join('\n')
+    fs.writeFileSync(args['--fpath'], newsource)
+
+    console.log("Commented out section!")
+  }
+
 
   //////////////////////////////////////////
   //console.log("Done")

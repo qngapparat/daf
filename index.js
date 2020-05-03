@@ -5,7 +5,7 @@ const amazon = require('./amazon')
  * @param {number} linenum Linenumber in file, where //l of section is
  * @param {string} outpath Where faasified files should be written
  */
-function main(fpath, linenum, outpath) {
+function main(fpath, linenum, outpath, commentout) {
 
   if(fpath == null) throw new Error("Specify fpath")
   if(linenum == null) throw new Error("Specify linenum")
@@ -14,7 +14,8 @@ function main(fpath, linenum, outpath) {
   return amazon({
     '--outpath': outpath,
     '--linenum': linenum,
-    '--fpath': fpath
+    '--fpath': fpath,
+    '--commentout': commentout
   })
 }
 

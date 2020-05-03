@@ -10,7 +10,8 @@ async function main() {
   const args = arg({
     '--fpath': String,
     '--linenum': String,
-    '--outpath': String
+    '--outpath': String,
+    '--commentout': Boolean
   })
 
   if (args['--fpath'] == null) {
