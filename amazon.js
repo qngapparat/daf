@@ -258,7 +258,7 @@ async function main(args) {
         // (3) add a Faas call the line below
         ls[Number(args['--linenum']) + idx] = `*/ \n${l}\n`
         ls[Number(args['--linenum']) + idx] +=
-          (analy.return && `let ${ analy.return } = ` || '') + `(new (require('aws-sdk'))
+          (analy.return && `let ${ analy.return } = ` || '') + `await (new (require('aws-sdk'))
           .Lambda({ region: 'your_region', /* Your access key and secret access key */}))
           .invoke({ FunctionName: "${ analy.name }" }).promise()
         `
