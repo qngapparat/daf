@@ -39,7 +39,7 @@ async function main(args) {
   fs.writeFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'package.json'), pkgjsonContent)
 
   
-  // writed bundles of each code dependency
+  // generate code dependencies
   // ie if the header is:
   //    //l require(./foo.js as foo) 
   //    => write bundle of foo.js 
@@ -53,12 +53,13 @@ async function main(args) {
     )
   }
 
-  // WRITE INDEX.JS
+  // generate index.js
   // (always overwrite)
   const filecontent = require('./generators/indexGen')(analy, secTxt)
   console.log("===========")
   console.log(filecontent)
   console.log("===========")
+  // write index.js
   fs.writeFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'index.js'), filecontent)
 
 
