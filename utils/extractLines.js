@@ -1,5 +1,5 @@
 const fsp = require('fs').promises
-const { isOpening, isClosing } = require('./utils')
+const { isOpening, isClosing } = require('./misc')
 
 async function extractLines(fpath, fromlinenum) {
   let txt = await fsp.readFile(fpath, { encoding: 'utf8' })

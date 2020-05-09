@@ -1,16 +1,12 @@
 // l name(myfunc)
-/**
+
 var a = 1
 var b = 1
 var c = 1
 var d = 1
 var e = 1
-*/ 
+
 // lend
-(new (require('aws-sdk'))
-          .Lambda({ region: 'your_region', /* Your access key and secret access key */}))
-          .invoke({ FunctionName: "myfunc" }).promise()
-        
 
 
 ////// l require(./tmp.js as a, js2faas as js2f ) install(js2faas, bin2faas>=0.0.1, java2faas^1.0.0) name(ayy) 
