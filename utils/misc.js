@@ -6,11 +6,14 @@ const fs = require('fs')
 // whether codeline is pragma start
 function isOpening(line) {
   line = line.replace(/\/\/\s*l/, '//l')
+  line = line.trim()
   return line.includes("//l ") || /\/\/l$/.test(line)
 }
 
 // whether codeline is pragma end
 function isClosing(line) {
+  line = line.replace(/\/\/\s*lend/, '//lend')
+  line = line.trim()
   return /^[\/]+\s*lend\s*$/.test(line)
 }
 

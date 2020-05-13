@@ -45,7 +45,7 @@ async function main(args) {
   //    => write bundle of foo.js 
   for (const reqS of analy.require) {
     // bundle the code with webpack
-    const { fname, fcontent } = require('./generators/bundleGen')(reqS)
+    const { fname, fcontent } = await (require('./generators/bundleGen')(reqS, args))
     // write webpacked js file
     fs.writeFileSync(
       path.join(args['--outpath'], 'lambdas', dirname, fname),

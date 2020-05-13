@@ -3,7 +3,7 @@ const tmp = require('tmp')
 const webpack = require('webpack')
 const fs = require('fs')
 
-function generate(reqS) {
+async function generate(reqS, args) {
 
   // We're importing a FILE / FUNCTION
   // => bundle /.dir/myfunc with webpack and write it
@@ -11,7 +11,7 @@ function generate(reqS) {
 
     // Ensure user specified an 'as' alias
     if (reqS.as == null || reqS.as.trim() === '') throw new Error("Specify an 'as' alias, for example: require(./file.js as alias)")
-   
+
     // './dir/myfunc' but absolute => /home/user/dir/myfunc
     const absolutereqSpath = path.resolve(
       path.resolve(args['--fpath'], '..'), // where file with //l lies 
@@ -73,9 +73,10 @@ function generate(reqS) {
     const fname = reqS.name.split(path.sep).pop()
 
     return {
-      fname, 
+      fname,
       fcontent
     }
   }
+}
 
-  module.exports = generate
+module.exports = generate

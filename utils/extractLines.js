@@ -30,18 +30,18 @@ async function extractLines(fpath, fromlinenum) {
   // ensure it's in a proper form
   // ####################################################################
 
-  if (lines[0].isOpening === false) throw new Error("Couldn't extract code from file (l)")
-  if (lines[lines.length - 1].isClosing === false) throw new Error("Couldn't extract code from file (lend)")
+  if (lines[0].isOpening === false) throw new Error("Couldn't read section (l). Have you saved the file?")
+  if (lines[lines.length - 1].isClosing === false) throw new Error("Couldn't extract code from file (lend). Have you saved the file?")
 
   // ensure there aren't other l or lend inbetween
   let inbetween = lines.slice(1, lines.length - 1)
   if (inbetween.map(l => l.isOpening).some(x => x) === true) {
-    throw new Error("Rogue 'l' comment found inbetween")
+    throw new Error("Rogue 'l' comment found. You cannot nest sections.")
   }
 
-  if (inbetween.map(l => l.isClosing).some(x => x) === true) {
-    throw new Error("Rogue 'lend' comment found inbetween")
-  }
+  // if (inbetween.map(l => l.isClosing).some(x => x) === true) {
+  //   throw new Error("You cannot nest sections. Rogue 'lend' comment found inbetween")
+  // }
 
   return lines 
 }
