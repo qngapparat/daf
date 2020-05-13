@@ -61,7 +61,7 @@ async function generate(reqS, args) {
     // Get webpack output
     const bundlejssrc = fs.readFileSync(path.join(outfiledir, 'bundle.js'), { encoding: 'utf8' })
 
-    console.log("BUNDLE SRC: ", bundlejssrc)
+    console.log("CREATED BUNDLESRC")
 
     const fcontent = `
         const a = 
@@ -77,6 +77,9 @@ async function generate(reqS, args) {
       fcontent
     }
   }
+
+  // we're importing a package
+  // => do nothing
 }
 
 module.exports = generate

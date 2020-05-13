@@ -7,6 +7,7 @@ const tmp = require('tmp')
 const webpack = require('webpack')
 const prettier = require('prettier')
 const { isClosing } = require('./utils/misc')
+const bundleGen = require('./generators/bundleGen')
 
 async function main(args) {
   // extract lines of source code that should be put on Faas
@@ -43,15 +44,25 @@ async function main(args) {
   // ie if the header is:
   //    //l require(./foo.js as foo) 
   //    => write bundle of foo.js 
-  for (const reqS of analy.require) {
-    // bundle the code with webpack
-    const { fname, fcontent } = await (require('./generators/bundleGen')(reqS, args))
-    // write webpacked js file
-    fs.writeFileSync(
-      path.join(args['--outpath'], 'lambdas', dirname, fname),
-      fcontent
-    )
+  for(let i = 0; i < analy.require.length; i++) {
+    const reqS = analy.require[i]
+    // ensure its a local file first (contains . or / ...)
+    if(/^\w+$/.test(reqS.name) == false) {
+      // bundle local file with webpack
+      const bundlerRes = await bundleGen(reqS, args)
+      if(bundlerRes != null) {
+        const { fname, fcontent } = bundlerRes
+        // write webpacked js file
+        fs.writeFileSync(
+          path.join(args['--outpath'], 'lambdas', dirname, fname),
+          fcontent
+        )
+      }
+      // if package: do nothing
+    }
+
   }
+  
 
   // generate index.js
   // (always overwrite)
