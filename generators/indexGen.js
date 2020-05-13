@@ -28,6 +28,7 @@ function generate(analy, secTxt) {
   
         exports.handler = async (event, context) => {
           ${ varDeclarationStatements.join('\n')}
+          
           ${secTxt}
           ${ analy.return != null ? `context.succeed(${analy.return.name})` : ""}
         }

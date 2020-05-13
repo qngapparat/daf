@@ -90,11 +90,21 @@ async function main(args) {
     for (const [idx, l] of ls.slice(args['--linenum']).entries()) {
       if (isClosing(l) === true) {
         // (3) add a Faas call the line below
+
+        // (3a) from vars(...) determine the lambda payload (what to pass to it)
+        let payloadTxt = analy.vars.map(v => `${ v.as }: ${ v.name }`).join(',\n')
+    
         ls[Number(args['--linenum']) + idx] = `*/ \n${l}\n`
         ls[Number(args['--linenum']) + idx] +=
-          (analy.return && `let ${ analy.return } = ` || '') + `await (new (require('aws-sdk'))
+          (analy.return && `let ${ analy.return.as } = ` || '') + `await (new (require('aws-sdk'))
           .Lambda({ region: 'your_region', /* Your access key and secret access key */}))
-          .invoke({ FunctionName: "${ analy.name }" }).promise()
+          .invoke({ 
+            FunctionName: "${ analy.name }",
+            Payload: JSON.stringify({
+              ${ payloadTxt }
+            })           
+          })
+          .promise().then(p => p.Payload)
         `
       }
     }
