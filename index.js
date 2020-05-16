@@ -1,3 +1,6 @@
+// TODO use path.basename instead of slice(path.sep)[-1] ...
+// TODO work on path handling generally
+
 const amazon = require('./amazon')
 /**
  * 
