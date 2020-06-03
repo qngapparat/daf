@@ -42,9 +42,7 @@ Options:
 
 ### Run via Editor Extension
 
-**Upcoming.**
-
------
+**Upcoming:** https://github.com/qngapparat/daf-vscode
 
 
 The tool creates an equivalent Lambda function of that section:
@@ -59,7 +57,7 @@ The tool creates an equivalent Lambda function of that section:
 
 You can deploy this function directly to AWS Lambda. 
 
-One file can have multiple `// l` ... `// lend` sections, that can be converted separately by Mouseclick.
+One file can have multiple `// l` ... `// lend` sections, that can be converted separately.
 
 
 ## Examples
