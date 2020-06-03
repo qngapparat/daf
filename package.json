@@ -1,13 +1,13 @@
 {
-  "name": "llend",
+  "name": "daf",
   "version": "0.0.17",
-  "description": "llend description",
+  "description": "Dependency-aware FaaSifier for NodeJS monoliths",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "llend": "./cli.js"
+    "daf": "./cli.js"
   },
   "author": "qngapparat <jakob.wallnoefer@outlook.com>",
   "license": "ISC",
