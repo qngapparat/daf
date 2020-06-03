@@ -3,6 +3,8 @@
 
 <br>
 
+DAF allows you to outsource parts of a NodeJS app to FaaS.
+
 In addition to existing tools, it supports:
 
 * Dependencies: ([`install`](#install))
@@ -37,7 +39,7 @@ Options:
 * `--fpath PATH`: The path to the `.js` file in which you want to faasify code
 * `--linenum NUM`: The line number of the `// l ...` Annotation. Beware, it's 0-indexed.
 * `--outpath PATH`: The path where the generated FaaS functions will be put (`outpath/lambdas/...`).
-* [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Don't forget to specify [`//l name(...)`](#name) before!
+* [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Don't forget to specify [`//l name(...)`](#name)!
 
 
 ### Run via Editor Extension
