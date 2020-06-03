@@ -45,7 +45,9 @@ Options:
 **Upcoming:** https://github.com/qngapparat/daf-vscode
 
 
-The tool creates an equivalent Lambda function of that section:
+## Output
+
+The tool creates an equivalent Lambda function of that section in `[--output]/lambdas/[name]`:
 
 
 ```
