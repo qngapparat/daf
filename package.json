@@ -1,6 +1,6 @@
 {
   "name": "daf",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Dependency-aware FaaSifier for NodeJS monoliths",
   "main": "index.js",
   "scripts": {
