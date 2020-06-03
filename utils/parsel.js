@@ -95,7 +95,7 @@ async function parsel(lcomment, args) {
       .trim()
 
     if (returnStr == '') {
-      console.log("Nothing specified with return, faas fn will be void")
+      console.log("Nothing specified with return(...), FaaS function will not return anything")
       return
     }
 
@@ -113,7 +113,7 @@ async function parsel(lcomment, args) {
     }
   }
   else {
-    console.log("Nothing specified with return, faas fn will be void")
+    console.log("Nothing specified with return(...), FaaS function will not return anything")
   }
 
 
@@ -137,15 +137,12 @@ async function parsel(lcomment, args) {
   if (str.includes('name')) {
     let nameStr = str.match(/name([^)]+)/)[0]
     // inner text 
-    // inner text 
     nameStr = nameStr
       .replace('name(', '')
       .replace(/\)$/, '')
 
     anl.name = nameStr.trim()
   }
-
-  console.log(anl)
   return anl
 
 }

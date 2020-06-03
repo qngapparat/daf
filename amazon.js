@@ -67,12 +67,8 @@ async function main(args) {
   // generate index.js
   // (always overwrite)
   const filecontent = require('./generators/indexGen')(analy, secTxt)
-  console.log("===========")
-  console.log(filecontent)
-  console.log("===========")
   // write index.js
   fs.writeFileSync(path.join(args['--outpath'], 'lambdas', dirname, 'index.js'), filecontent)
-
 
   // If commentout was specified, comment out that section of monolith source
   if (args['--commentout']) {
@@ -80,7 +76,6 @@ async function main(args) {
       throw new Error("Give it a name in order to use that feature")
     }
 
-    console.log("Commenting out section....")
     let ls = fs.readFileSync(args['--fpath'], { encoding: 'utf8' })
     ls = ls.split('\n')
     // (1) add a /* under // l
@@ -112,13 +107,7 @@ async function main(args) {
     // write back to disk
     const newsource = ls.join('\n')
     fs.writeFileSync(args['--fpath'], newsource)
-
-    console.log("Commented out section!")
   }
-
-
-  //////////////////////////////////////////
-  //console.log("Done")
 }
 
 module.exports = main
