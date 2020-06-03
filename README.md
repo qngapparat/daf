@@ -9,6 +9,12 @@ In addition to existing tools, it supports:
 * Importing other files and functions ([`require`](#require))
 * Global variables ([`vars`](#vars))
 
+## Install
+
+```shell
+npm i -g llend # install globally
+```
+(`llend` is the former name of DAF.)
 
 ## Usage
 
@@ -22,7 +28,6 @@ var a = 1;
 
 ### Run via Terminal (Not recommended)
 
-`llend` is the former name of DAF.
 
 ```shell
 $ llend OPTIONS... 
@@ -32,6 +37,7 @@ Options:
 * `--fpath PATH`: The path to the `.js` file in which you want to faasify code
 * `--linenum NUM`: The line number of the `// l ...` Annotation. Beware, it's 0-indexed.
 * `--outpath PATH`: The path where the generated FaaS functions will be put (`outpath/lambdas/...`).
+* [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Don't forget to specify [`//l name(...)`](#name) before!
 
 
 ### Run via Editor Extension
@@ -60,7 +66,7 @@ One file can have multiple `// l` ... `// lend` sections, that can be converted 
 
 ### `name`
 
-You can give your Lambda a name to make it easy to find:
+You can give your Lambda a name to better keep track of it:
 
 ```js
 // l name(mylamb)
