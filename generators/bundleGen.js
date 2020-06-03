@@ -18,8 +18,6 @@ async function generate(reqS, args) {
       reqS.name // relative path from where filewith//l lies to file he wants to import
     )
 
-    console.log("PATH: ", absolutereqSpath)
-
     // Workaround for silly webpack not accepting code strings, only filepaths
 
     // create dummy file that imports, and immediately exports the function
@@ -60,9 +58,6 @@ async function generate(reqS, args) {
 
     // Get webpack output
     const bundlejssrc = fs.readFileSync(path.join(outfiledir, 'bundle.js'), { encoding: 'utf8' })
-
-    console.log("CREATED BUNDLESRC")
-
     const fcontent = `
         const a = 
          ${ bundlejssrc}

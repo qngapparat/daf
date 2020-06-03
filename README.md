@@ -1,9 +1,7 @@
 <h1 align="center">DAF</h2>
 <h2 align="center">Dependency-aware FaaSifier</h2>
 
-<br>
-
-DAF allows you to outsource parts of a NodeJS app to FaaS.
+DAF allows you to outsource parts of a NodeJS app to FaaS
 
 In addition to existing tools, it supports:
 
@@ -14,13 +12,12 @@ In addition to existing tools, it supports:
 ## Install
 
 ```shell
-npm i -g llend # install globally
+npm i -g daf # install globally
 ```
-(`llend` is the former name of DAF.)
 
 ## Usage
 
-1. Add annotations in your Monolith code:
+### Add annotations in your Monolith code:
 
 ```js
 // l     
@@ -28,11 +25,11 @@ var a = 1;
 // lend 
 ```
 
-### Run via Terminal (Not recommended)
+### Run DAF via Terminal (Not recommended):
 
 
 ```shell
-$ llend OPTIONS... 
+$ daf OPTIONS... 
 ```
 Options: 
 
@@ -41,8 +38,7 @@ Options:
 * `--outpath PATH`: The path where the generated FaaS functions will be put (`outpath/lambdas/...`).
 * [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Don't forget to specify [`//l name(...)`](#name)!
 
-
-### Run via Editor Extension
+### Run DAF via Editor Extension:
 
 **Upcoming:** https://github.com/qngapparat/daf-vscode
 
@@ -60,11 +56,12 @@ The tool creates an equivalent Lambda function of that section in `[--output]/la
 ```
 
 You can deploy this function directly to AWS Lambda. 
-
 One file can have multiple `// l` ... `// lend` sections, that can be converted separately.
 
 
-## Examples
+## Annotations
+
+`//l` can be followed by any combination of these space-separated directives.
 
 ### `name`
 
@@ -94,12 +91,11 @@ a++
 // lend
 ```
 
-The Lambda will automatically unwrap them from the event.
-
+They will be added to the scope inside the Lambda.
 
 ### `require`
 
-Your code might rely on functions from other files. You can import them using `require()`:
+Your code might rely on functions from other files. You can declare that using `require()`:
 
 ```js
 // l require(./foo.js as foo)
@@ -107,7 +103,7 @@ foo()
 // lend
 ```
 
-A portable version of `foo.js` is then included in the deployment package.
+A portable version of `foo.js` is then included in the deployment package, and it is added to the scope inside the Lambda.
 
 ```
 └── lambdas
@@ -116,7 +112,7 @@ A portable version of `foo.js` is then included in the deployment package.
        └── ...
 ```
 
-If `foo` in turn depends on other functions or dependencies, they are included as well (recursively). **DEVNOTE**: This is a very common JS practice, we use Webpack under the hood for this.
+If `foo` in turn depends on other functions or dependencies, they are bundled as well (recursively) using webpack. 
 
 ### `install`
 
@@ -149,7 +145,7 @@ Your monolith code may have no return statement. To receive something back from 
 
 -----
 
-## Advanced Examples
+## Useful hints
 
 ### Multiple parameters
 

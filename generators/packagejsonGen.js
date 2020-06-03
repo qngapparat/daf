@@ -40,7 +40,7 @@ function generate(args, analy, dirname) {
      "main": "index.js",
      "scripts": {
        "test": "echo \"Error: no test specified\" && exit 1"
-       // TODO deploy scr
+       // TODO deploy script ?
      },
      "author": "",
      ...pkgjsonContent, // only overwrite dependencies of previous package.json (if there's one)
