@@ -96,7 +96,7 @@ async function main(args) {
     
         ls[Number(args['--linenum']) + idx] = `*/ \n${l}\n`
         ls[Number(args['--linenum']) + idx] +=
-          (analy.return && `let ${ analy.return.as } = ` || '') + `await (new (require('aws-sdk'))
+          (analy.return && `let ${ analy.return.as } = ` || '') + prettier.format(`await (new (require('aws-sdk'))
           .Lambda({ region: 'your_region', /* Your access key and secret access key */}))
           .invoke({ 
             FunctionName: "${ analy.name }",
@@ -106,6 +106,7 @@ async function main(args) {
           })
           .promise().then(p => p.Payload)
         `
+          )
       }
     }
     // write back to disk
