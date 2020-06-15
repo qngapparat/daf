@@ -29,6 +29,8 @@ var a = 1;
 // lend 
 ```
 
+The enclosed code is packaged into a FaaS function.
+
 ### Run DAF via Terminal (Not recommended):
 
 
