@@ -9,6 +9,10 @@ In addition to existing tools, it supports:
 * Importing other files and functions ([`require`](#require))
 * Global variables ([`vars`](#vars))
 
+<img src="https://github.com/qngapparat/daf/blob/master/usagecapture.gif" />
+
+
+
 ## Install
 
 ```shell
