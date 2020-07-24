@@ -5,7 +5,7 @@ DAF allows you to outsource parts of a NodeJS app to FaaS
 
 In addition to existing tools, it supports:
 
-* Dependencies: ([`install`](#install))
+* Dependencies ([`install`](#install))
 * Importing other files and functions ([`require`](#require))
 * Global variables ([`vars`](#vars))
 
