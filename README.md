@@ -29,8 +29,12 @@ var a = 1;
 
 The enclosed code will be packaged into a FaaS function.
 
-### Run DAF via Terminal (Not recommended):
 
+### Run DAF via Editor Extension:
+
+Search for [DAF-VSCode](https://marketplace.visualstudio.com/items?itemName=qngapparat.daf-vscode) on the VSCode Marketplace.
+
+### Run DAF via Terminal (Not recommended):
 
 ```shell
 $ daf OPTIONS... 
@@ -41,10 +45,6 @@ Options:
 * `--linenum NUM`: The line number of the `// l ...` Annotation (**starts at 0**)
 * `--outpath PATH`: The path where the generated FaaS functions will be put (`outpath/lambdas/...`)
 * [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Only works if you specified [`//l name(...)`](#name)!
-
-### Run DAF via Editor Extension:
-
-**Upcoming:** https://github.com/qngapparat/daf-vscode
 
 
 ## Output
