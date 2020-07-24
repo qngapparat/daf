@@ -38,9 +38,9 @@ $ daf OPTIONS...
 Options: 
 
 * `--fpath PATH`: The path to the `.js` file in which you want to faasify code
-* `--linenum NUM`: The line number (**starts at 0**) of the `// l ...` Annotation. 
-* `--outpath PATH`: The path where the generated FaaS functions will be put (`outpath/lambdas/...`).
-* [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Only works if you specify [`//l name(...)`](#name)!
+* `--linenum NUM`: The line number of the `// l ...` Annotation (**starts at 0**)
+* `--outpath PATH`: The path where the generated FaaS functions will be put (`outpath/lambdas/...`)
+* [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Only works if you specified [`//l name(...)`](#name)!
 
 ### Run DAF via Editor Extension:
 
