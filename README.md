@@ -176,10 +176,11 @@ You can rename functions and packages, when import them:
 
 For functions it is obligatory:
 
-``s
+```js
 // l require(./external.js as external)
   ...
 // lend
+``` 
 
 ### Versioning
 
