@@ -7,7 +7,7 @@ In addition to existing tools, it supports:
 
 * Dependencies ([`install`](#install))
 * Importing other files and functions ([`require`](#require))
-* Global variables ([`vars`](#vars))
+<!-- * Global variables ([`vars`](#vars)) -->
 
 
 
@@ -19,7 +19,7 @@ npm i -g daf # install globally
 
 ## Usage
 
-### Add annotations in your Monolith code:
+### 1. Add annotations in your Monolith code:
 
 ```js
 // l     
@@ -29,12 +29,11 @@ var a = 1;
 
 The enclosed code will be packaged into a FaaS function.
 
-
-### Run DAF via Editor Extension:
+### 2. Run DAF via Editor Extension:
 
 Search for [DAF-VSCode](https://marketplace.visualstudio.com/items?itemName=qngapparat.daf-vscode) on the VSCode Marketplace.
-
-### Run DAF via Terminal (Not recommended):
+    
+### 2. Run DAF via CLI (Alternative, not recommended):
 
 ```shell
 $ daf OPTIONS... 
@@ -47,7 +46,7 @@ Options:
 * [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Only works if you specified [`//l name(...)`](#name)!
 
 
-## Output
+### 3. Output
 
 The tool creates an equivalent Lambda function of that section in `[--output]/lambdas/[name]`:
 
@@ -59,11 +58,11 @@ The tool creates an equivalent Lambda function of that section in `[--output]/la
         └── package.json 
 ```
 
-You can deploy this function directly to AWS Lambda. 
+You can zip this folder and upload it directly to Amazon Lambda.
 One file can have multiple `// l` ... `// lend` sections, that can be converted separately.
 
 
-## Annotations
+## Annotation syntax
 
 `//l` can be followed by any combination of these space-separated directives.
 
@@ -84,6 +83,9 @@ You can give your Lambda a name to better keep track of it:
     
 ```
 
+
+<!-- 
+
 ### `vars`
 
 Your code might rely on global variables. You can denote them with `vars()`:
@@ -96,6 +98,8 @@ a++
 ```
 
 They will be added to the scope inside the Lambda.
+
+-->
 
 ### `require`
 
@@ -156,7 +160,7 @@ Your monolith code may have no return statement. To receive something back from 
 With most `// l` expressions, you can provide a comma-separated list too:
 
 ```js
-// l vars(a, b, c)
+// l install(lodash, rollup, express)
 ...
 ```
 
@@ -170,7 +174,12 @@ You can rename functions and packages, when import them:
 // lend
 ```
 
-This is obligatory if you import local functions.
+For functions it is obligatory:
+
+``s
+// l require(./external.js as external)
+  ...
+// lend
 
 ### Versioning
 
