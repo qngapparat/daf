@@ -1,7 +1,7 @@
 <h1 align="center">DAF</h2>
 <h2 align="center">Dependency-aware FaaSifier</h2>
 
-DAF allows you to outsource parts of a NodeJS app to FaaS
+DAF lets you outsource parts of a NodeJS app to FaaS
 
 In addition to existing tools, it supports:
 
