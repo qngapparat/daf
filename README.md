@@ -166,7 +166,7 @@ With most `// l` expressions, you can provide a comma-separated list too:
 
 ### Aliasing
 
-You can rename functions and packages, when import them:
+You can rename functions and packages, when importing them:
 
 ```js
 // l require(opencv2 as cv)
@@ -174,7 +174,7 @@ You can rename functions and packages, when import them:
 // lend
 ```
 
-For functions it is obligatory:
+For functions this is obligatory:
 
 ```js
 // l require(./external.js as external)
