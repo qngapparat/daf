@@ -135,7 +135,7 @@ Your code might depend on NPM packages. You can specify them with `install()`. T
 You probably want to import it as well:
 
 ```js 
-// l install(opencv2) require(opencv2)
+// l install(opencv2) require(opencv2 as opencv2)
    opencv2.detectFaces(...)
 // lend
 ```
@@ -163,7 +163,7 @@ With most `// l` expressions, you can provide a comma-separated list too:
 // l install(lodash, rollup, express)
 ...
 ```
-
+<!--
 ### Aliasing
 
 You can rename functions and packages, when importing them:
@@ -182,6 +182,7 @@ For functions this is obligatory:
 // lend
 ``` 
 
+
 ### Versioning
 
 You can specify the exact versions of the NPM packages to install:
@@ -193,3 +194,5 @@ You can specify the exact versions of the NPM packages to install:
 ```
 
 The syntax follows this official schema: https://docs.npmjs.com/misc/semver
+
+-->
