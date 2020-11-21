@@ -33,6 +33,7 @@ The enclosed code will be packaged into a FaaS function.
 
 Search for [DAF-VSCode](https://marketplace.visualstudio.com/items?itemName=qngapparat.daf-vscode) on the VSCode Marketplace.
     
+  <!--
 ### 2. Run DAF via CLI (Alternative, not recommended):
 
 ```shell
@@ -44,7 +45,7 @@ Options:
 * `--linenum NUM`: The line number of the `// l ...` Annotation (**starts at 0**)
 * `--outpath PATH`: The path where the generated FaaS functions will be put (`outpath/lambdas/...`)
 * [`--commentout`]: If specified, the faasified section will be replaced with an Lambda API call. Only works if you specified [`//l name(...)`](#name)!
-
+-->
 
 ### 3. Output
 
